@@ -1,0 +1,9 @@
+---
+title: "About"
+---
+
+I am Hunter Stephens, a rising sophomore in Archbishop Stepinac. My email is Hockeyhunter21@gmail.com and you can find my github account here: [Github](https://github.com/huner1212)
+
+In honor of the summer 2024 Olympics this project has the aim to show the effect of silver and bronze medals on placement of countries as they are often overlooked when it comes to scoring. You can find the github repo here: [Repo](https://github.com/huner1212/Final-Project)
+
+“This project was created as a part of Kane’s Data Science Bootcamp.”  [Course info](https://bootcamp.davidkane.info/)

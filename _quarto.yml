@@ -1,0 +1,20 @@
+project:
+  type: website
+
+website:
+  title: "Bronze and Silver Medals On Olympic Placing"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - models.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

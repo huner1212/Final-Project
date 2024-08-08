@@ -1,0 +1,76 @@
+---
+title: "Model"
+author: "Hunter Stephens"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: False
+#| warning: False
+library(tidyverse)
+library(tidybayes)
+library(brms)
+library(gtsummary)
+```
+
+```{r}
+#| label: cleaning
+#| message: False
+summer_med <- read_csv("Summer_olympic_Medals.csv")
+sorted_summer_med <- summer_med |>
+  arrange(Year, 
+          desc(Gold), 
+          desc(Silver), 
+          desc(Bronze)) |>
+  group_by(Year) |>
+  mutate(placement = row_number()) |> 
+  mutate(medal_type = case_when(
+    Silver > Bronze ~ "More Silver",
+    Bronze > Silver ~ "More Bronze",
+    TRUE ~ "Equal"
+  )) |>
+  ungroup() |> 
+  drop_na()
+
+```
+
+```{r}
+#| label: model
+#| cache: True
+fit_summer <- sorted_summer_med |> 
+    brm(formula = placement ~ Silver + Bronze, family = poisson(), silent = 2, refresh = 0, seed = 9)
+ndata <- expand.grid(
+  Silver = 0:50, 
+  Bronze = 0:50
+)
+
+# Ensure the data is expanded correctly
+epred_draws <- fit_summer |> 
+  add_epred_draws(newdata = ndata)
+
+graph <- epred_draws |> 
+  mutate(medal_type = case_when(
+    Silver > Bronze ~ "More Silver",
+    Bronze > Silver ~ "More Bronze",
+    TRUE ~ "Equal"
+  )) |>
+  sample_frac(.1) 
+```
+
+\begin{equation}
+\text{placement} \sim \text{Poisson}(\lambda)
+\end{equation}
+
+\begin{equation}
+\log(\lambda) = \beta_0 + \beta_1 \text{Silver} + \beta_2 \text{Bronze}
+\end{equation}
+
+Placement is the placement of each olympic team during each year. it was made by grouping them by year and then sorting by amount of gold medals. Silver and Bronze represent the amount of each medal.
+
+```{r}
+#| label: table
+tbl_regression(fit_summer)
+```
